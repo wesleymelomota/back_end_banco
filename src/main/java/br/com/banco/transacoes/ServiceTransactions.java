@@ -1,5 +1,6 @@
 package br.com.banco.transacoes;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -12,7 +13,7 @@ import br.com.banco.conta.ContaModel;
 import br.com.banco.conta.ContaRepository;
 import br.com.banco.conta.ContaService;
 import br.com.banco.transferencia.TransferenciaModel;
-
+//commit mudando o formato da data
 @Service
 public class ServiceTransactions {
 	/*serviço para registrar movimentações.
@@ -29,13 +30,13 @@ public class ServiceTransactions {
 	public void registrarTransacao(TransferenciaModel transferencia) {
 		TransactionModel transacao = new TransactionModel();
 		boolean existConta = serviceConta.checarSeContaExiste(transferencia.getNomeOperadorTransferencia());
-		
+		System.out.println();
 		if(existConta) {
 			ContaModel conta = serviceConta.procurarContaPorNome(transferencia.getContaId().getNomeResponsavel());
 			transacao.setTransferencia(transferencia);
 			transacao.setConta(conta);
 			transacao.setSaldo(transferencia.getValor());
-			transacao.setDataTransacao(LocalDateTime.now());	
+			transacao.setDataTransacao(LocalDate.now());	
 		}
 		
 		if(transacao.getTransferencia().getTipo().equalsIgnoreCase("Saque")) {

@@ -1,5 +1,6 @@
 package br.com.banco.transacoes;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -14,14 +15,14 @@ import org.springframework.hateoas.RepresentationModel;
 
 import br.com.banco.conta.ContaModel;
 import br.com.banco.transferencia.TransferenciaModel;
-
+/*commit - mudando o formato da data do atributo dataTransacao*/
 @Entity
 public class TransactionModel extends RepresentationModel<TransactionModel>{
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	private LocalDateTime dataTransacao;
+	private LocalDate dataTransacao;
 	@ManyToOne
 	private ContaModel conta;
 	@OneToOne
@@ -30,7 +31,7 @@ public class TransactionModel extends RepresentationModel<TransactionModel>{
 	
 	
 	public TransactionModel() {}
-	public TransactionModel(LocalDateTime dataTransacao,ContaModel conta, TransferenciaModel transferencia,
+	public TransactionModel(LocalDate dataTransacao,ContaModel conta, TransferenciaModel transferencia,
 			Double saldo) {
 		this.dataTransacao = dataTransacao;
 		this.conta = conta;
@@ -44,10 +45,10 @@ public class TransactionModel extends RepresentationModel<TransactionModel>{
 	public void setId(Long id) {
 		this.id = id;
 	}
-	public LocalDateTime getDataTransacao() {
+	public LocalDate getDataTransacao() {
 		return dataTransacao;
 	}
-	public void setDataTransacao(LocalDateTime dataTransacao) {
+	public void setDataTransacao(LocalDate dataTransacao) {
 		this.dataTransacao = dataTransacao;
 	}
 	public ContaModel getConta() {
