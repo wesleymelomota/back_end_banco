@@ -17,7 +17,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import br.com.banco.conta.ContaModel;
 
 @Entity
-@Table(name ="transferencia")
+@Table(name ="transferencia_entity")
 public class TransferenciaModel {
 	
 	

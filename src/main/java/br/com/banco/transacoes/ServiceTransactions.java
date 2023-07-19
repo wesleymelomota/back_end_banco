@@ -13,12 +13,10 @@ import br.com.banco.conta.ContaModel;
 import br.com.banco.conta.ContaRepository;
 import br.com.banco.conta.ContaService;
 import br.com.banco.transferencia.TransferenciaModel;
-//commit mudando o formato da data
+
 @Service
 public class ServiceTransactions {
-	/*serviço para registrar movimentações.
-	 * a primeira função recebe uma transação e confere o tipo e encaminha a requisição para o tratamento adquado. 
-	 * */
+	
 	@Autowired
 	private TransactionRepository repository;
 	@Autowired
@@ -30,8 +28,9 @@ public class ServiceTransactions {
 	public void registrarTransacao(TransferenciaModel transferencia) {
 		TransactionModel transacao = new TransactionModel();
 		boolean existConta = serviceConta.checarSeContaExiste(transferencia.getNomeOperadorTransferencia());
-		System.out.println();
+		
 		if(existConta) {
+			
 			ContaModel conta = serviceConta.procurarContaPorNome(transferencia.getContaId().getNomeResponsavel());
 			transacao.setTransferencia(transferencia);
 			transacao.setConta(conta);
@@ -46,8 +45,12 @@ public class ServiceTransactions {
 			transacao.setSaldo(transferencia.getValor());
 			this.registrarDeposito(transacao.getConta().getNumeroConta(), transferencia.getValor());
 		}
-		if(transacao.getTransferencia().getTipo().equalsIgnoreCase("transferencia")) {
-			this.registrarTransferencia(transacao.getConta().getNumeroConta(), 
+		if(transacao.getTransferencia().getTipo().equalsIgnoreCase("transferencia-entrada")) {
+			this.registrarTransferenciaEntrada(transacao.getConta().getNumeroConta(), 
+					transacao.getTransferencia().getNomeOperadorTransferencia(), transacao.getTransferencia().getValor());
+		}
+		if(transacao.getTransferencia().getTipo().equalsIgnoreCase("transferencia-saida")) {
+			this.registrarTransferenciaSaida(transferencia.getContaId().getNumeroConta(), 
 					transacao.getTransferencia().getNomeOperadorTransferencia(), transacao.getTransferencia().getValor());
 		}
 		repository.save(transacao);
@@ -81,10 +84,22 @@ public class ServiceTransactions {
 		
 	};
 	
-	public void registrarTransferencia(Integer numeroContaDebitada,String  nomeResponsavelContaCreditado,  Double valorTransferido) {
+	public void registrarTransferenciaEntrada(Integer numeroContaDebitada,String  nomeResponsavelContaCreditado,  Double valorTransferido) {
 		this.registrarSaque(numeroContaDebitada, valorTransferido);
 	
 		ContaModel contaCreditada = serviceConta.procurarContaPorNome(nomeResponsavelContaCreditado);
+		SaldoModel saldoCreditado = serviceSaldo.obterSaldoId(contaCreditada.getSaldo().getId());
+		saldoCreditado.setSaldo(valorTransferido);
+		saldoCreditado.setConta(contaCreditada);
+		serviceConta.salvar(contaCreditada);
+		serviceSaldo.salvarAlteracao(saldoCreditado);
+		
+	};
+	public void registrarTransferenciaSaida(Integer numeroContaCreditada,String  nomeResponsavelContaDebitado,  Double valorTransferido) {
+		ContaModel conta = serviceConta.procurarContaPorNome(nomeResponsavelContaDebitado);
+		this.registrarSaque(conta.getNumeroConta(), valorTransferido);
+		
+		ContaModel contaCreditada = serviceConta.procurarContaPorNumero(numeroContaCreditada);
 		SaldoModel saldoCreditado = serviceSaldo.obterSaldoId(contaCreditada.getSaldo().getId());
 		saldoCreditado.setSaldo(valorTransferido);
 		saldoCreditado.setConta(contaCreditada);
