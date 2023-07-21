@@ -12,6 +12,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import br.com.banco.transacoes.SaldoModel;
 import br.com.banco.transacoes.TransactionModel;
 import br.com.banco.transferencia.TransferenciaModel;
@@ -28,7 +30,8 @@ public class ContaModel {
 	private String nomeResponsavel;
 	@Column(unique = true)
 	private Integer numeroConta;
-	@OneToMany(fetch = FetchType.EAGER)
+	@JsonIgnore
+	@OneToMany(fetch = FetchType.LAZY)
 	private List<TransactionModel> transacoes;
 	@OneToOne(fetch = FetchType.EAGER)
 	private SaldoModel saldo;

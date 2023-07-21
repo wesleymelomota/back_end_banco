@@ -16,8 +16,8 @@ public class TransferenciaService {
 	@Autowired
 	ContaRepository contaRepository;
 	
-	public void registrarTransferencia(TransferenciaModel transferencia) {
-		repository.save(transferencia);
+	public TransferenciaModel registrarTransferencia(TransferenciaModel transferencia) {
+		return repository.save(transferencia);
 		
 	}
 	

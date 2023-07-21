@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.banco.conta.ContaModel;
+import br.com.banco.conta.ContaService;
 import br.com.banco.dtos.TransferenciaDto;
 import br.com.banco.transacoes.ServiceTransactions;
 
@@ -33,9 +34,10 @@ public class TransferenciaController {
 	@PostMapping("/transferencia")
 	public ResponseEntity<TransferenciaModel> transferir(@RequestBody TransferenciaDto transferenciaDto) {
 		TransferenciaModel transferencia = new TransferenciaModel();
+		
 		BeanUtils.copyProperties(transferenciaDto, transferencia);
 		service.registrarTransferencia(transferencia);
-		transactions.registrarTransacao(transferencia);
+		transactions.registrarTransferencia(transferencia);
 		return new ResponseEntity<>(transferencia, HttpStatus.CREATED);
 	}
 	@GetMapping("/transferencias")

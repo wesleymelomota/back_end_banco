@@ -7,13 +7,16 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import br.com.banco.conta.ContaModel;
 import br.com.banco.conta.ContaRepository;
 import br.com.banco.conta.ContaService;
+import br.com.banco.dtos.DepositoDto;
 import br.com.banco.transferencia.TransferenciaModel;
-
+import br.com.banco.transferencia.TransferenciaService;
+/**/
 @Service
 public class ServiceTransactions {
 	
@@ -23,45 +26,35 @@ public class ServiceTransactions {
 	private ContaService serviceConta;
 	@Autowired
 	private SaldoService serviceSaldo;
+	@Autowired
+	private TransferenciaService serviceTransferencia;
 	
 	
-	public void registrarTransacao(TransferenciaModel transferencia) {
-		TransactionModel transacao = new TransactionModel();
-		boolean existConta = serviceConta.checarSeContaExiste(transferencia.getNomeOperadorTransferencia());
+	public boolean registrarSaque(TransactionModel transaction) {
 		
-		if(existConta) {
-			
-			ContaModel conta = serviceConta.procurarContaPorNome(transferencia.getContaId().getNomeResponsavel());
-			transacao.setTransferencia(transferencia);
-			transacao.setConta(conta);
-			transacao.setSaldo(transferencia.getValor());
-			transacao.setDataTransacao(LocalDate.now());	
+		ContaModel contaEntity = serviceConta.procurarContaPorNome(transaction.getTransferencia().getNomeOperadorTransferencia()); 
+		SaldoModel saldoModelConta = serviceSaldo.obterSaldoId(contaEntity.getSaldo().getId());
+		if(saldoModelConta.getSaldo() > 0) {
+			Double saldoAtual = contaEntity.getSaldo().getSaldo();
+			saldoAtual -= transaction.getTransferencia().getValor();
+			saldoModelConta.setSaldo(saldoAtual);
+			saldoModelConta.setConta(contaEntity);
+			serviceSaldo.salvarAlteracao(saldoModelConta);
+			repository.save(transaction);
+			contaEntity.getTransacoes().add(transaction);
+			serviceConta.salvar(contaEntity);
+			return true;
+		}else {
+			return false;
 		}
 		
-		if(transacao.getTransferencia().getTipo().equalsIgnoreCase("Saque")) {
-			this.registrarSaque(transacao.getConta().getNumeroConta(), transacao.getTransferencia().getValor());
-		}
-		if(transacao.getTransferencia().getTipo().equalsIgnoreCase("deposito")) {
-			transacao.setSaldo(transferencia.getValor());
-			this.registrarDeposito(transacao.getConta().getNumeroConta(), transferencia.getValor());
-		}
-		if(transacao.getTransferencia().getTipo().equalsIgnoreCase("transferencia-entrada")) {
-			this.registrarTransferenciaEntrada(transacao.getConta().getNumeroConta(), 
-					transacao.getTransferencia().getNomeOperadorTransferencia(), transacao.getTransferencia().getValor());
-		}
-		if(transacao.getTransferencia().getTipo().equalsIgnoreCase("transferencia-saida")) {
-			this.registrarTransferenciaSaida(transferencia.getContaId().getNumeroConta(), 
-					transacao.getTransferencia().getNomeOperadorTransferencia(), transacao.getTransferencia().getValor());
-		}
-		repository.save(transacao);
-	}
-	
-	public boolean registrarSaque(Integer numeroConta, Double valorSaque) {
+	};
+	public boolean registrarSaque(Integer numeroConta, Double valor) {
 		ContaModel contaEntity = serviceConta.procurarContaPorNumero(numeroConta); 
 		SaldoModel saldoModelConta = serviceSaldo.obterSaldoId(contaEntity.getSaldo().getId());
 		if(saldoModelConta.getSaldo() > 0) {
 			Double saldoAtual = contaEntity.getSaldo().getSaldo();
-			saldoAtual -= valorSaque;
+			saldoAtual -= valor;
 			saldoModelConta.setSaldo(saldoAtual);
 			saldoModelConta.setConta(contaEntity);
 			serviceSaldo.salvarAlteracao(saldoModelConta);
@@ -70,41 +63,81 @@ public class ServiceTransactions {
 			return false;
 		}
 		
-	};
+	};/**/
 	
-	public void registrarDeposito(Integer numeroConta, Double valorDepositado) {
-		ContaModel contaEntity = serviceConta.procurarContaPorNumero(numeroConta);
+	public TransactionModel registrarDepositoEntrada(DepositoDto deposito) {
+		
+		TransactionModel transaction = new TransactionModel();
+		TransferenciaModel transferencia = new TransferenciaModel();
+		ContaModel contaEntity = serviceConta.procurarContaPorNome(deposito.getNomeResponsavelConta());
 		SaldoModel saldo = serviceSaldo.obterSaldoId(contaEntity.getSaldo().getId());
-		if(saldo != null) {
-			saldo.depositarSaldo(valorDepositado);
+		
+		if(saldo != null && contaEntity != null) {
+			transferencia.setContaId(contaEntity);
+			transferencia.setNomeOperadorTransferencia(deposito.getNomeResponsavelConta());
+			transferencia.setTipo("DEPOSITO");
+			transferencia.setValor(deposito.getValor());
+			
+			Double saldoAtual = saldo.getSaldo();
+			saldoAtual += deposito.getValor();
+			transaction.setConta(contaEntity);
+			transaction.setSaldo(saldoAtual);
+			transaction.setDataTransacao(LocalDate.now());
+			transaction.setTransferencia(serviceTransferencia.registrarTransferencia(transferencia));
+			saldo.setSaldo(saldoAtual);
+			saldo.setConta(contaEntity);
 			serviceSaldo.salvarAlteracao(saldo);
+
+			contaEntity.getTransacoes().add(repository.save(transaction));
 			contaEntity.setSaldo(saldo);
 			serviceConta.salvar(contaEntity);
+			return transaction;
+			
+		}else {
+			return null;
 		}
 		
 	};
 	
-	public void registrarTransferenciaEntrada(Integer numeroContaDebitada,String  nomeResponsavelContaCreditado,  Double valorTransferido) {
-		this.registrarSaque(numeroContaDebitada, valorTransferido);
-	
-		ContaModel contaCreditada = serviceConta.procurarContaPorNome(nomeResponsavelContaCreditado);
+	public void registrarTransferencia(TransferenciaModel transferencia) {
+			TransactionModel transaction = new TransactionModel();
+			ContaModel contaCreditada = serviceConta.procurarContaPorNome(transferencia.getNomeOperadorTransferencia());
+			SaldoModel saldoCreditado = serviceSaldo.obterSaldoId(contaCreditada.getSaldo().getId());
+			if(transferencia.getTipo().equalsIgnoreCase("transferencia-entrada")) {
+				Double saldoAtual = saldoCreditado.getSaldo();
+				saldoAtual += transferencia.getValor();
+				transaction.setConta(contaCreditada);
+				transaction.setTransferencia(transferencia);
+				transaction.setSaldo(saldoAtual);
+				transaction.setDataTransacao(LocalDate.now());
+				saldoCreditado.setSaldo(saldoAtual);
+				saldoCreditado.setConta(contaCreditada);
+				contaCreditada.getTransacoes().add(repository.save(transaction));
+				serviceSaldo.salvarAlteracao(saldoCreditado);
+				serviceConta.salvar(contaCreditada);
+				
+			}else if(transferencia.getTipo().equalsIgnoreCase("transferencia-saida")) {
+				this.registrarTransferenciaSaida(transferencia);
+			}
+			
+		};
+	public void registrarTransferenciaSaida(TransferenciaModel transferencia) {
+		TransactionModel transaction = new TransactionModel();
+		ContaModel contaCreditada = serviceConta.procurarContaPorNome(transferencia.getNomeOperadorTransferencia());
 		SaldoModel saldoCreditado = serviceSaldo.obterSaldoId(contaCreditada.getSaldo().getId());
-		saldoCreditado.setSaldo(valorTransferido);
-		saldoCreditado.setConta(contaCreditada);
-		serviceConta.salvar(contaCreditada);
-		serviceSaldo.salvarAlteracao(saldoCreditado);
+		Double saldoAtual = saldoCreditado.getSaldo();
+		saldoAtual += transferencia.getValor();
 		
-	};
-	public void registrarTransferenciaSaida(Integer numeroContaCreditada,String  nomeResponsavelContaDebitado,  Double valorTransferido) {
-		ContaModel conta = serviceConta.procurarContaPorNome(nomeResponsavelContaDebitado);
-		this.registrarSaque(conta.getNumeroConta(), valorTransferido);
-		
-		ContaModel contaCreditada = serviceConta.procurarContaPorNumero(numeroContaCreditada);
-		SaldoModel saldoCreditado = serviceSaldo.obterSaldoId(contaCreditada.getSaldo().getId());
-		saldoCreditado.setSaldo(valorTransferido);
+		transferencia.setTipo("transfencia-entrada");
+		transaction.setConta(contaCreditada);
+		transaction.setTransferencia(transferencia);
+		transaction.setSaldo(saldoAtual);
+		transaction.setDataTransacao(LocalDate.now());
+		contaCreditada.getTransacoes().add(repository.save(transaction));
+		saldoCreditado.setSaldo(saldoAtual);
 		saldoCreditado.setConta(contaCreditada);
-		serviceConta.salvar(contaCreditada);
 		serviceSaldo.salvarAlteracao(saldoCreditado);
+		serviceConta.salvar(contaCreditada);
 		
 	};
 	
@@ -112,7 +145,7 @@ public class ServiceTransactions {
 		return repository.findByid(id);
 	}
 	
-	@SuppressWarnings("unused")		//nome: filtrarTransactions
+	@SuppressWarnings("unused")		
 	public Iterable<TransactionModel> transactions(Integer numeroConta, String dataInicio, String dataFim, 
 			String nomeOperador, Integer pagina){
 		if(numeroConta != null) {

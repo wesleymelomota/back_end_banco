@@ -11,8 +11,6 @@ public class TransferenciaDto {
 	private String nomeOperadorTransferencia;
 	private ContaModel contaId;
 	
-	
-	
 	public Double getValor() {
 		return valor;
 	}

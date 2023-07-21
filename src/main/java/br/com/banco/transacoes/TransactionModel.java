@@ -15,7 +15,7 @@ import org.springframework.hateoas.RepresentationModel;
 
 import br.com.banco.conta.ContaModel;
 import br.com.banco.transferencia.TransferenciaModel;
-/*commit - mudando o formato da data do atributo dataTransacao*/
+/**/
 @Entity
 public class TransactionModel extends RepresentationModel<TransactionModel>{
 	@Id
