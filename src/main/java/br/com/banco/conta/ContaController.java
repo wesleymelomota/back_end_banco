@@ -26,7 +26,7 @@ public class ContaController {
 	@Autowired
 	private ContaService service;
 	
-	@PostMapping("/conta/cadastro")
+	@PostMapping("/conta")
 	public ResponseEntity<ContaModel> criarConta(@RequestBody ContaDto contaDto) {
 		ContaModel contaEntity = new ContaModel();
 		BeanUtils.copyProperties(contaDto, contaEntity);

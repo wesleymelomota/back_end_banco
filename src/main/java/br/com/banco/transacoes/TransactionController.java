@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.banco.dtos.DepositoDto;
+import br.com.banco.dtos.SaqueDto;
 
 @RestController
 @RequestMapping("/banco")
@@ -25,6 +26,11 @@ public class TransactionController {
 	@PostMapping("/transaction/deposito")
 	public ResponseEntity<TransactionModel> depositarSaldo(@RequestBody DepositoDto deposito){
 		return new ResponseEntity<>(service.registrarDepositoEntrada(deposito) ,HttpStatus.CREATED); 
+	}
+	@PostMapping("/saque")
+	public ResponseEntity<TransactionModel> sacar(@RequestBody SaqueDto saqueDto){
+		return new ResponseEntity<>(service.registrarSaque(saqueDto.getNomeTitularConta(), saqueDto.getNumeroConta(),
+				saqueDto.getValor()) ,HttpStatus.CREATED);
 	}
 	
 	@GetMapping("/transactions")

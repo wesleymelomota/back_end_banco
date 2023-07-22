@@ -30,7 +30,7 @@ public class ServiceTransactions {
 	private TransferenciaService serviceTransferencia;
 	
 	
-	public boolean registrarSaque(TransactionModel transaction) {
+	/*public boolean registrarSaque(TransactionModel transaction) {
 		
 		ContaModel contaEntity = serviceConta.procurarContaPorNome(transaction.getTransferencia().getNomeOperadorTransferencia()); 
 		SaldoModel saldoModelConta = serviceSaldo.obterSaldoId(contaEntity.getSaldo().getId());
@@ -48,19 +48,34 @@ public class ServiceTransactions {
 			return false;
 		}
 		
-	};
-	public boolean registrarSaque(Integer numeroConta, Double valor) {
-		ContaModel contaEntity = serviceConta.procurarContaPorNumero(numeroConta); 
+	};*/
+	public TransactionModel registrarSaque(String nomeResponsavel, Integer numeroConta, Double valor) {
+		TransactionModel transaction = new TransactionModel();
+		TransferenciaModel transferencia = new TransferenciaModel();
+		ContaModel contaEntity = serviceConta.procurarContaPorNome(nomeResponsavel); 
 		SaldoModel saldoModelConta = serviceSaldo.obterSaldoId(contaEntity.getSaldo().getId());
 		if(saldoModelConta.getSaldo() > 0) {
 			Double saldoAtual = contaEntity.getSaldo().getSaldo();
+			transferencia.setContaId(contaEntity);
+			transferencia.setNomeOperadorTransferencia(nomeResponsavel);
+			transferencia.setTipo("SAQUE");
+			transferencia.setValor(-valor);
+			serviceTransferencia.registrarTransferencia(transferencia);
+			
+			transaction.setTransferencia(transferencia);
+			transaction.setConta(contaEntity);
+			transaction.setDataTransacao(LocalDate.now());
 			saldoAtual -= valor;
+			transaction.setSaldo(saldoAtual);
+			repository.save(transaction);
 			saldoModelConta.setSaldo(saldoAtual);
 			saldoModelConta.setConta(contaEntity);
 			serviceSaldo.salvarAlteracao(saldoModelConta);
-			return true;
+			contaEntity.getTransacoes().add(transaction);
+			serviceConta.salvar(contaEntity);
+			return transaction;
 		}else {
-			return false;
+			return null;
 		}
 		
 	};/**/
