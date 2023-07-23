@@ -20,6 +20,16 @@ public class SaldoModel {
 	@OneToOne
 	private ContaModel conta;
 	
+	public SaldoModel(){}
+	public SaldoModel(Double saldo) {
+		this.saldo = saldo;
+		
+	}
+	public SaldoModel(Double saldo, ContaModel conta) {
+		this.saldo = saldo;
+		this.conta = conta;
+	}
+	
 	public void depositarSaldo(Double saldo) {
 		this.saldo += saldo;
 	}

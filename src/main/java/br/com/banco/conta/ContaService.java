@@ -29,7 +29,7 @@ public class ContaService {
 		repository.save(conta);
 		return conta;
 	}
-	public List<ContaModel> obterTodasContas(){
+	public List<ContaModel> obterContas(){
 		return repository.findAll();
 	}
 	

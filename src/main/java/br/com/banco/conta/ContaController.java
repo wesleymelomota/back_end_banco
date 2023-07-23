@@ -35,7 +35,7 @@ public class ContaController {
 	}
 	@GetMapping("/contas")
 	public  ResponseEntity<List<ContaModel>> obterContas(){
-		return new ResponseEntity<>(service.obterTodasContas(), HttpStatus.OK);
+		return new ResponseEntity<>(service.obterContas(), HttpStatus.OK);
 	}
 	@GetMapping("/transferencia/{numeroConta}")
 	public ResponseEntity<ContaModel> obterTransferenciasNumeroConta(@PathVariable Integer numeroConta){
