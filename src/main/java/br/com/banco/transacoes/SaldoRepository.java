@@ -6,6 +6,6 @@ import br.com.banco.conta.ContaModel;
 
 public interface SaldoRepository extends JpaRepository<SaldoModel, Long>{
 	
-	SaldoModel findByconta(ContaModel conta);
+	//SaldoModel findByconta(ContaModel conta);
 	SaldoModel findByid(Long id);
 }

@@ -14,9 +14,9 @@ public class SaldoService {
 	@Autowired
 	private SaldoRepository repository;
 	//obter saldo de uma determinada conta
-	public SaldoModel obterSaldoConta(ContaModel conta) {
+	/*public SaldoModel obterSaldoConta(ContaModel conta) {
 		return repository.findByconta(conta);
-	}
+	}*/
 	//salva qualquer tipo de manipulação com o saldo
 	public void salvarAlteracao(SaldoModel novoSaldo) {
 		repository.save(novoSaldo);

@@ -17,15 +17,15 @@ public class ContaService {
 	private SaldoService serviceSaldo;
 	
 	public ContaModel salvar(ContaModel conta) {
+		Random geradorNumeroAleatorioConta = new Random();
 		if(conta.getSaldo() == null) {			
 			SaldoModel saldo = new SaldoModel();
 			saldo.setSaldo(0.0);
 			conta.setSaldo(saldo);
 			serviceSaldo.salvarAlteracao(saldo);
 		}
-		Random geradorNumeroAleatorioConta = new Random();
-	
-		conta.setNumeroConta(geradorNumeroAleatorioConta.nextInt(1000000, 9999999));
+
+		conta.setNumeroConta(conta.getNumeroConta() == null ? geradorNumeroAleatorioConta.nextInt(1000000, 9999999) : conta.getNumeroConta());
 		repository.save(conta);
 		return conta;
 	}

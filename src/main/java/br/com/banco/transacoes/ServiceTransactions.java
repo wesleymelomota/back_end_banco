@@ -2,21 +2,18 @@ package br.com.banco.transacoes;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import br.com.banco.conta.ContaModel;
-import br.com.banco.conta.ContaRepository;
 import br.com.banco.conta.ContaService;
 import br.com.banco.dtos.DepositoDto;
 import br.com.banco.transferencia.TransferenciaModel;
 import br.com.banco.transferencia.TransferenciaService;
-/**/
+
 @Service
 public class ServiceTransactions {
 	
@@ -30,25 +27,6 @@ public class ServiceTransactions {
 	private TransferenciaService serviceTransferencia;
 	
 	
-	/*public boolean registrarSaque(TransactionModel transaction) {
-		
-		ContaModel contaEntity = serviceConta.procurarContaPorNome(transaction.getTransferencia().getNomeOperadorTransferencia()); 
-		SaldoModel saldoModelConta = serviceSaldo.obterSaldoId(contaEntity.getSaldo().getId());
-		if(saldoModelConta.getSaldo() > 0) {
-			Double saldoAtual = contaEntity.getSaldo().getSaldo();
-			saldoAtual -= transaction.getTransferencia().getValor();
-			saldoModelConta.setSaldo(saldoAtual);
-			saldoModelConta.setConta(contaEntity);
-			serviceSaldo.salvarAlteracao(saldoModelConta);
-			repository.save(transaction);
-			contaEntity.getTransacoes().add(transaction);
-			serviceConta.salvar(contaEntity);
-			return true;
-		}else {
-			return false;
-		}
-		
-	};*/
 	public TransactionModel registrarSaque(String nomeResponsavel, Integer numeroConta, Double valor) {
 		TransactionModel transaction = new TransactionModel();
 		TransferenciaModel transferencia = new TransferenciaModel();
@@ -69,7 +47,7 @@ public class ServiceTransactions {
 			transaction.setSaldo(saldoAtual);
 			repository.save(transaction);
 			saldoModelConta.setSaldo(saldoAtual);
-			saldoModelConta.setConta(contaEntity);
+			
 			serviceSaldo.salvarAlteracao(saldoModelConta);
 			contaEntity.getTransacoes().add(transaction);
 			serviceConta.salvar(contaEntity);
@@ -78,7 +56,7 @@ public class ServiceTransactions {
 			return null;
 		}
 		
-	};/**/
+	};
 	
 	public TransactionModel registrarDepositoEntrada(DepositoDto deposito) {
 		
@@ -100,7 +78,7 @@ public class ServiceTransactions {
 			transaction.setDataTransacao(LocalDate.now());
 			transaction.setTransferencia(serviceTransferencia.registrarTransferencia(transferencia));
 			saldo.setSaldo(saldoAtual);
-			saldo.setConta(contaEntity);
+			
 			serviceSaldo.salvarAlteracao(saldo);
 
 			contaEntity.getTransacoes().add(repository.save(transaction));
@@ -126,7 +104,7 @@ public class ServiceTransactions {
 				transaction.setSaldo(saldoAtual);
 				transaction.setDataTransacao(LocalDate.now());
 				saldoCreditado.setSaldo(saldoAtual);
-				saldoCreditado.setConta(contaCreditada);
+				
 				contaCreditada.getTransacoes().add(repository.save(transaction));
 				serviceSaldo.salvarAlteracao(saldoCreditado);
 				serviceConta.salvar(contaCreditada);
@@ -150,7 +128,7 @@ public class ServiceTransactions {
 		transaction.setDataTransacao(LocalDate.now());
 		contaCreditada.getTransacoes().add(repository.save(transaction));
 		saldoCreditado.setSaldo(saldoAtual);
-		saldoCreditado.setConta(contaCreditada);
+		
 		serviceSaldo.salvarAlteracao(saldoCreditado);
 		serviceConta.salvar(contaCreditada);
 		
@@ -192,6 +170,6 @@ public class ServiceTransactions {
 	}
 	public SaldoModel consultarSaldo(Integer numeroConta) {
 		ContaModel conta = serviceConta.procurarContaPorNumero(numeroConta);
-		return serviceSaldo.obterSaldoConta(conta);
+		return conta.getSaldo();
 	}
 }

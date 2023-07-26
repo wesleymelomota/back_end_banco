@@ -4,11 +4,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToOne;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import br.com.banco.conta.ContaModel;
 
 @Entity
 public class SaldoModel {
@@ -16,18 +12,12 @@ public class SaldoModel {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private Double saldo;
-	@JsonIgnore
-	@OneToOne
-	private ContaModel conta;
 	
 	public SaldoModel(){}
+
 	public SaldoModel(Double saldo) {
 		this.saldo = saldo;
 		
-	}
-	public SaldoModel(Double saldo, ContaModel conta) {
-		this.saldo = saldo;
-		this.conta = conta;
 	}
 	
 	public void depositarSaldo(Double saldo) {
@@ -48,12 +38,7 @@ public class SaldoModel {
 	public void setSaldo(Double saldo) {
 		this.saldo = saldo;
 	}
-	public ContaModel getConta() {
-		return conta;
-	}
-	public void setConta(ContaModel conta) {
-		this.conta = conta;
-	}
+	
 	
 	
 }
