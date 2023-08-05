@@ -32,13 +32,9 @@ public class TransferenciaController {
 	private ServiceTransactions transactions;
 	
 	@PostMapping("/transferencia")
-	public ResponseEntity<TransferenciaModel> transferir(@RequestBody TransferenciaDto transferenciaDto) {
-		TransferenciaModel transferencia = new TransferenciaModel();
+	public ResponseEntity<ContaModel> transferir(@RequestBody TransferenciaDto transferenciaDto) {
 		
-		BeanUtils.copyProperties(transferenciaDto, transferencia);
-		service.registrarTransferencia(transferencia);
-		transactions.registrarTransferencia(transferencia);
-		return new ResponseEntity<>(transferencia, HttpStatus.CREATED);
+		return new ResponseEntity<>(transactions.registrarTransferencia(transferenciaDto), HttpStatus.CREATED);
 	}
 	@GetMapping("/transferencias")
 	public ResponseEntity<List<TransferenciaModel>> transferencias(){

@@ -2,6 +2,8 @@ package br.com.banco.dtos;
 
 
 
+import java.time.LocalDate;
+
 import br.com.banco.conta.ContaModel;
 
 public class TransferenciaDto {
@@ -9,8 +11,16 @@ public class TransferenciaDto {
 	private Double valor;
 	private String tipo;
 	private String nomeOperadorTransferencia;
-	private ContaModel contaId;
+	private LocalDate dataTransferencia;
+	private ContaModel conta;
 	
+	
+	public LocalDate getDataTransferencia() {
+		return dataTransferencia;
+	}
+	public void setDataTransferencia(LocalDate dataTransferencia) {
+		this.dataTransferencia = dataTransferencia;
+	}
 	public Double getValor() {
 		return valor;
 	}
@@ -29,11 +39,11 @@ public class TransferenciaDto {
 	public void setNomeOperadorTransferencia(String nomeOperadorTransferencia) {
 		this.nomeOperadorTransferencia = nomeOperadorTransferencia;
 	}
-	public ContaModel getContaId() {
-		return contaId;
+	public ContaModel getConta() {
+		return conta;
 	}
-	public void setContaId(ContaModel contaId) {
-		this.contaId = contaId;
+	public void setConta(ContaModel conta) {
+		this.conta = conta;
 	}
 	
 	

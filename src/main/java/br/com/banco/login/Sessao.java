@@ -1,10 +1,19 @@
 package br.com.banco.login;
 
+import br.com.banco.conta.ContaModel;
+
 public class Sessao {
 	
 	private String userName;
 	private String token;
+	private ContaModel conta;
 	
+	public ContaModel getConta() {
+		return conta;
+	}
+	public void setConta(ContaModel conta) {
+		this.conta = conta;
+	}
 	public String getUserName() {
 		return userName;
 	}

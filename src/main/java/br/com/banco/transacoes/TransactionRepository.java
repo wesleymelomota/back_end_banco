@@ -1,5 +1,6 @@
 package br.com.banco.transacoes;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -19,24 +20,26 @@ public interface TransactionRepository extends PagingAndSortingRepository<Transa
 	TransactionModel findByid(Long id);
 	List<TransactionModel> findBycontaNumeroConta(Integer contaNumero);
 	List<TransactionModel> findBydataTransacaoBetween(LocalDateTime dataInicio, LocalDateTime dataFim);
+	List<TransactionModel> findBytransferenciaDataTransferenciaBetween(LocalDate dataInicio, LocalDate dataFim);
 	List<TransactionModel> findBytransferenciaNomeOperadorTransferencia(String nome);
 	
 	 @Query("SELECT t FROM TransactionModel t " +
-	            "WHERE t.conta.numeroConta = :contaNumero " +
-	            "AND t.dataTransacao BETWEEN :dataInicio AND :dataFim " +
+	            "WHERE t.transferencia.dataTransferencia BETWEEN :dataInicio AND :dataFim " +
 	            "AND t.transferencia.nomeOperadorTransferencia = :nomeOperadorTransferencia")
-	    List<TransactionModel> findByContaNumeroAndDataTransacaoBetweenAndNomeOperadorTransferencia(
-	            @Param("contaNumero") Integer contaNumero,
-	            @Param("dataInicio") LocalDateTime dataInicio,
-	            @Param("dataFim") LocalDateTime dataFim,
+	    List<TransactionModel> findBytransferenciaDataTransferenciaBetweenAndNomeOperadorTransferencia(
+	            @Param("dataInicio") LocalDate dataInicio,
+	            @Param("dataFim") LocalDate dataFim,
 	            @Param("nomeOperadorTransferencia") String nomeOperadorTransferencia);
+	 
+	 
 	 @Query("SELECT t FROM TransactionModel t " +
-	            "WHERE t.dataTransacao BETWEEN :dataInicio AND :dataFim " +
+	            "WHERE t.conta.numeroConta = :contaNumero " +
+	            "AND t.transferencia.dataTransferencia BETWEEN :dataInicio AND :dataFim " +
 	            "AND t.transferencia.nomeOperadorTransferencia = :nomeOperadorTransferencia")
-	    List<TransactionModel> findBydataTransacaoBetweenAndNomeOperadorTransferencia(
-	            @Param("dataInicio") LocalDateTime dataInicio,
-	            @Param("dataFim") LocalDateTime dataFim,
-	            @Param("nomeOperadorTransferencia") String nomeOperadorTransferencia);//retirnado o paginato
-
-
+	    List<TransactionModel> findByContaNumeroAndTransferenciaDataTransferenciaBetweenAndNomeOperadorTransferencia(
+	            @Param("contaNumero") Integer contaNumero,
+	            @Param("dataInicio") LocalDate dataInicio,
+	            @Param("dataFim") LocalDate dataFim,
+	            @Param("nomeOperadorTransferencia") String nomeOperadorTransferencia);
+	 
 }

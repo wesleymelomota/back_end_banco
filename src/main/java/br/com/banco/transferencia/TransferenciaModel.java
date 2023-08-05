@@ -1,5 +1,6 @@
 package br.com.banco.transferencia;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import javax.persistence.Entity;
@@ -27,9 +28,10 @@ public class TransferenciaModel {
 	private Double valor;
 	private String tipo;
 	private String nomeOperadorTransferencia;
+	private LocalDate dataTransferencia;
 	@JsonIgnore
-	@ManyToOne(fetch = FetchType.EAGER)
-	private ContaModel contaId;
+	@ManyToOne(fetch = FetchType.LAZY)
+	private ContaModel conta;
 	public Long getId() {
 		return id;
 	}
@@ -37,6 +39,12 @@ public class TransferenciaModel {
 		this.id = id;
 	}
 	
+	public LocalDate getDataTransferencia() {
+		return dataTransferencia;
+	}
+	public void setDataTransferencia(LocalDate dataTransferencia) {
+		this.dataTransferencia = dataTransferencia;
+	}
 	public Double getValor() {
 		return valor;
 	}
@@ -55,11 +63,11 @@ public class TransferenciaModel {
 	public void setNomeOperadorTransferencia(String nomeOperadorTransferencia) {
 		this.nomeOperadorTransferencia = nomeOperadorTransferencia;
 	}
-	public ContaModel getContaId() {
-		return contaId;
+	public ContaModel getConta() {
+		return conta;
 	}
-	public void setContaId(ContaModel contaId) {
-		this.contaId = contaId;
+	public void setConta(ContaModel conta) {
+		this.conta = conta;
 	}
 	
 	

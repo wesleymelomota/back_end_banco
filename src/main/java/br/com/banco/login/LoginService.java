@@ -20,29 +20,26 @@ public class LoginService {
 	
 	private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 	
-	public Sessao checarUser(LoginDto login) {
-		Usuario usuario = repoUser.findByusername(login.getUserName());
-		if(usuario != null) {
-			Boolean checkPass = encoder.matches(login.getPassword(), usuario.getPassword());
+	public Sessao checarUser(LoginDto login)  {
+		Sessao sessao = new Sessao();
+		Usuario usuario = repoUser.findByusername(login.getUsername());
+		Boolean checkPass = encoder.matches(login.getPassword(), usuario.getPassword());
+		
+		if(!checkPass) {
+			throw new RuntimeException("Erro! senha ou usuario invalido");
 			
-			if(!checkPass) {
-				throw new RuntimeException("Erro! senha ou usuario invalido");
-				
-			}
-			Sessao sessao = new Sessao();
-			sessao.setUserName(usuario.getUsername());
-			JwtToken token = new JwtToken();
-			
-			token.setExpiration(new Date(System.currentTimeMillis() + ConfigSecurity.EXPIRATION));
-			token.setIssuedAT(new Date(System.currentTimeMillis()));
-			token.setRoles(usuario.getRole().name());
-			token.setSubject(usuario.getUsername());
-			sessao.setToken(JwtCreator.create(ConfigSecurity.PREFIX, ConfigSecurity.getKey(), token));
-			
-			return sessao;
-		}else {
-			
-			throw new RuntimeException("ERRO! Usario invalido");
 		}
+		sessao.setUserName(usuario.getUsername());
+		JwtToken token = new JwtToken();
+		
+		token.setExpiration(new Date(System.currentTimeMillis() + ConfigSecurity.EXPIRATION));
+		token.setIssuedAT(new Date(System.currentTimeMillis()));
+		token.setRoles(usuario.getRole().name());
+		token.setSubject(usuario.getUsername());
+		sessao.setConta(usuario.getConta());
+		sessao.setToken(JwtCreator.create(ConfigSecurity.PREFIX, ConfigSecurity.getKey(), token));
+		return sessao;
+
 	}
+			
 } 

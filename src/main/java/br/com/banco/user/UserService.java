@@ -18,11 +18,12 @@ public class UserService {
 	public UserDto salvar(Usuario user) {
 		Usuario usuario = new Usuario();
 		UserDto userDto = new UserDto();
-		String pass = user.getPassword();
+		
+		usuario.setConta(user.getConta());
 		usuario.setEmail(user.getEmail());
 		usuario.setName(user.getName());
 		usuario.setUsername(user.getUsername());
-		usuario.setPassword(encoder.encode(pass));
+		usuario.setPassword(encoder.encode(user.getPassword()));
 		usuario.setRole(Roles.USER);
 
 		repository.save(usuario);

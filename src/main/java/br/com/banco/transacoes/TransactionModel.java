@@ -13,6 +13,8 @@ import javax.persistence.OneToOne;
 
 import org.springframework.hateoas.RepresentationModel;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import br.com.banco.conta.ContaModel;
 import br.com.banco.transferencia.TransferenciaModel;
 /**/
@@ -22,7 +24,8 @@ public class TransactionModel extends RepresentationModel<TransactionModel>{
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	private LocalDate dataTransacao;
+	private LocalDateTime dataTransacao;
+	@JsonIgnore
 	@ManyToOne
 	private ContaModel conta;
 	@OneToOne
@@ -31,7 +34,7 @@ public class TransactionModel extends RepresentationModel<TransactionModel>{
 	
 	
 	public TransactionModel() {}
-	public TransactionModel(LocalDate dataTransacao,ContaModel conta, TransferenciaModel transferencia,
+	public TransactionModel(LocalDateTime dataTransacao,ContaModel conta, TransferenciaModel transferencia,
 			Double saldo) {
 		this.dataTransacao = dataTransacao;
 		this.conta = conta;
@@ -45,10 +48,10 @@ public class TransactionModel extends RepresentationModel<TransactionModel>{
 	public void setId(Long id) {
 		this.id = id;
 	}
-	public LocalDate getDataTransacao() {
+	public LocalDateTime getDataTransacao() {
 		return dataTransacao;
 	}
-	public void setDataTransacao(LocalDate dataTransacao) {
+	public void setDataTransacao(LocalDateTime dataTransacao) {
 		this.dataTransacao = dataTransacao;
 	}
 	public ContaModel getConta() {

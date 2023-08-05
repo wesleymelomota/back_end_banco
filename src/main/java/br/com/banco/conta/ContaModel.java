@@ -30,7 +30,7 @@ public class ContaModel {
 	private String nomeResponsavel;
 	@Column(unique = true)
 	private Integer numeroConta;
-	@JsonIgnore
+
 	@OneToMany(fetch = FetchType.LAZY)
 	private List<TransactionModel> transacoes;
 	@OneToOne(fetch = FetchType.EAGER)

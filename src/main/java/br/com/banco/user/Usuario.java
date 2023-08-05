@@ -10,11 +10,13 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import br.com.banco.conta.ContaModel;
 import br.com.banco.enums.Roles;
 
 @Entity
@@ -33,7 +35,8 @@ public class Usuario implements UserDetails{
 	private String email;
 	@Enumerated(EnumType.STRING)
 	private Roles role;
-	
+	@OneToOne
+	private ContaModel conta;
 	
 	public Usuario() {}
 	
@@ -106,6 +109,14 @@ public class Usuario implements UserDetails{
 	public boolean isEnabled() {
 		// TODO Auto-generated method stub
 		return true;
+	}
+
+	public ContaModel getConta() {
+		return conta;
+	}
+
+	public void setConta(ContaModel conta) {
+		this.conta = conta;
 	}
 	
 	

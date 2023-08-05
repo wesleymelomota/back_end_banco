@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.banco.conta.ContaModel;
 import br.com.banco.dtos.DepositoDto;
 import br.com.banco.dtos.SaqueDto;
 
@@ -24,11 +25,17 @@ public class TransactionController {
 	private ServiceTransactions service;
 	
 	@PostMapping("/transaction/deposito")
-	public ResponseEntity<TransactionModel> depositarSaldo(@RequestBody DepositoDto deposito){
-		return new ResponseEntity<>(service.registrarDepositoEntrada(deposito) ,HttpStatus.CREATED); 
+	public ResponseEntity<ContaModel> depositarSaldo(@RequestBody DepositoDto deposito){
+		try {
+			ContaModel conta = service.registrarDepositoEntrada(deposito);
+			return new ResponseEntity<>(conta ,HttpStatus.CREATED); 
+			
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 	@PostMapping("/saque")
-	public ResponseEntity<TransactionModel> sacar(@RequestBody SaqueDto saqueDto){
+	public ResponseEntity<ContaModel> sacar(@RequestBody SaqueDto saqueDto){
 		return new ResponseEntity<>(service.registrarSaque(saqueDto.getNomeTitularConta(), saqueDto.getNumeroConta(),
 				saqueDto.getValor()) ,HttpStatus.CREATED);
 	}
