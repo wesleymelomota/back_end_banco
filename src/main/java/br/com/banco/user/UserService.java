@@ -1,5 +1,7 @@
 package br.com.banco.user;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -16,9 +18,9 @@ public class UserService {
 	private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 	
 	public UserDto salvar(Usuario user) {
+		
 		Usuario usuario = new Usuario();
 		UserDto userDto = new UserDto();
-		
 		usuario.setConta(user.getConta());
 		usuario.setEmail(user.getEmail());
 		usuario.setName(user.getName());
@@ -28,5 +30,7 @@ public class UserService {
 
 		repository.save(usuario);
 		return userDto.convert(user);
+		
 	}
+	
 }

@@ -20,7 +20,7 @@ import br.com.banco.transferencia.TransferenciaModel;
 import lombok.Data;
 
 @Entity
-@Table(name = "conta_entity")
+@Table(name = "conta")
 public class ContaModel {
 	
 	@Id
@@ -30,8 +30,9 @@ public class ContaModel {
 	private String nomeResponsavel;
 	@Column(unique = true)
 	private Integer numeroConta;
-
-	@OneToMany(fetch = FetchType.LAZY)
+	
+	
+	@OneToMany(mappedBy = "conta", fetch = FetchType.LAZY)
 	private List<TransactionModel> transacoes;
 	@OneToOne(fetch = FetchType.EAGER)
 	private SaldoModel saldo;

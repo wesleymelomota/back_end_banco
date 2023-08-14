@@ -1,8 +1,7 @@
 package br.com.banco.transacoes;
 
-import java.time.LocalDate;
+
 import java.time.LocalDateTime;
-import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -10,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
+import javax.persistence.Table;
 
 import org.springframework.hateoas.RepresentationModel;
 
@@ -18,6 +18,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import br.com.banco.conta.ContaModel;
 import br.com.banco.transferencia.TransferenciaModel;
 /**/
+@Table(name =  "transaction")
 @Entity
 public class TransactionModel extends RepresentationModel<TransactionModel>{
 	@Id

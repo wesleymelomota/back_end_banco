@@ -1,5 +1,6 @@
 package br.com.banco.conta.config;
 
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -41,5 +42,6 @@ public class WebConfig {
     GrantedAuthorityDefaults grantedAuthorityDefaults() {
         return new GrantedAuthorityDefaults(""); 
     }
+	
 }
 
