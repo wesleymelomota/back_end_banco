@@ -26,7 +26,6 @@ public class WebConfig {
 		.antMatchers(HttpMethod.POST, "/banco/login").permitAll()
 		.antMatchers(HttpMethod.POST, "/banco/conta").permitAll()
 		.antMatchers(HttpMethod.GET, "/banco/contas").hasAnyAuthority("ADMIN", "USER")
-		.antMatchers(HttpMethod.GET, "/banco/transferencia/{numeroConta}").hasAnyAuthority("ADMIN", "USER")
 		.antMatchers(HttpMethod.POST, "/banco/transaction/deposito").hasAnyAuthority("ADMIN", "USER")
 		.antMatchers(HttpMethod.POST, "/banco/saque").hasAnyAuthority("ADMIN", "USER")
 		.antMatchers(HttpMethod.GET, "/banco/transactions").hasAnyAuthority("ADMIN","USER")
