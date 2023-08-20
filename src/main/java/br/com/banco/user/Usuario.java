@@ -38,14 +38,16 @@ public class Usuario implements UserDetails{
 	private String email;
 	@Enumerated(EnumType.STRING)
 	private Roles role;
-	@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	@OneToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "conta_id")
 	private ContaModel conta;
 	
 	public Usuario() {}
 	
-	public Usuario(String username) {
-		this.username = username;
+	public Usuario(String name, String username, String email) {
+		setName(name);
+		setUsername(username);
+		setEmail(email);
 	}
 	
 

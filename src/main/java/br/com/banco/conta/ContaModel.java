@@ -2,6 +2,7 @@ package br.com.banco.conta;
 
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -31,9 +32,9 @@ public class ContaModel {
 	@Column(unique = true)
 	private Integer numeroConta;
 	
-	
 	@OneToMany(mappedBy = "conta", fetch = FetchType.LAZY)
 	private List<TransactionModel> transacoes;
+	
 	@OneToOne(fetch = FetchType.EAGER)
 	private SaldoModel saldo;
 	

@@ -3,6 +3,7 @@ package br.com.banco.transacoes;
 
 import java.time.LocalDateTime;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -29,7 +30,7 @@ public class TransactionModel extends RepresentationModel<TransactionModel>{
 	@JsonIgnore
 	@ManyToOne
 	private ContaModel conta;
-	@OneToOne
+	@OneToOne(cascade = CascadeType.ALL)
 	private TransferenciaModel transferencia;
 	private Double saldo;
 	
