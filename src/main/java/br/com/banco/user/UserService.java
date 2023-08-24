@@ -33,6 +33,7 @@ public class UserService {
 	}
 	public UserDto update(UserDto user) {
 		UserDto userDto = new UserDto();
+		
 		if(repository.existsById(user.getId())) {
 			Usuario usuario = repository.findByid(user.getId());
 			usuario.setEmail(user.getEmail());
